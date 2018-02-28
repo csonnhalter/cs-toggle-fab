@@ -13,40 +13,289 @@
   </head>
   <body>
 
-    <test-fixture id="BasicTestFixture">
+    <test-fixture id="vanilla">
       <template>
         <cs-toggle-fab></cs-toggle-fab>
       </template>
     </test-fixture>
 
-    <test-fixture id="ChangedPropertyTestFixture">
+    <test-fixture id="notoggle">
       <template>
-        <cs-toggle-fab prop1="new-prop1"></cs-toggle-fab>
+        <cs-toggle-fab notoggle></cs-toggle-fab>
+      </template>
+    </test-fixture>
+
+    <test-fixture id="customcss">
+      <template>
+        <cs-toggle-fab do-icon="menu" done-icon="add"
+          style="--toggle-button-do-color: rgb(255, 0, 0); --toggle-button-done-color: rgb(0, 0, 255); --toggle-button-tip-background: rgb(255, 0, 0); --toggle-button-tip-text-color: rgb(0, 0, 255); --toggle-button-tip-opacity:0.5; ">
+        </cs-toggle-fab>
+      </template>
+    </test-fixture>
+
+    <test-fixture id="papercss">
+      <template>
+        <cs-toggle-fab 
+          style="--paper-tooltip-background: rgb(0, 255, 0); --paper-tooltip-text-color: rgb(255, 0, 255); --paper-tooltip-opacity:0.1; ">
+        </cs-toggle-fab>
+      </template>
+    </test-fixture>
+
+    <test-fixture id="modedone">
+      <template>
+        <cs-toggle-fab start-done></cs-toggle-fab>
       </template>
     </test-fixture>
 
     <script>
-      suite('cs-toggle-fab', function() {
+      suite('toggle element, no attributes',() => {
+        let tbutton;
 
-        test('instantiating the element with default properties works', function() {
-          var element = fixture('BasicTestFixture');
-          assert.equal(element.prop1, 'cs-toggle-fab');
-          var elementShadowRoot = element.shadowRoot;
-          var elementHeader = elementShadowRoot.querySelector('h2');
-          assert.equal(elementHeader.innerHTML, 'Hello cs-toggle-fab!');
+        setup(() => {
+          tbutton = fixture('vanilla');
         });
 
-        test('setting a property on the element works', function() {
-          // Create a test fixture
-          var element = fixture('ChangedPropertyTestFixture');
-          assert.equal(element.prop1, 'new-prop1');
-          var elementShadowRoot = element.shadowRoot;
-          var elementHeader = elementShadowRoot.querySelector('h2');
-          assert.equal(elementHeader.innerHTML, 'Hello new-prop1!');
+        test('notoggle is false',() => {
+      
+          assert.equal(tbutton.notoggle, false);
         });
 
+        test('default icons in use',() => {
+      
+          assert.equal(tbutton.doneIcon, "expand-less");
+          assert.equal(tbutton.doIcon, "expand-more");
+        });
+
+        test('start with do state',() => {
+      
+          assert.equal(tbutton.mode, "do");
+        });
+
+        test('start with expand-more icon', () => {
+      
+          assert.equal(tbutton._ModeIcon, "expand-more");
+        });
+
+        test('pressing button toggles', () => {
+    
+          pressbutton(tbutton);
+
+          assert.equal(tbutton.mode, "done");
+          assert.equal(tbutton._ModeIcon, "expand-less");
+          assert.equal(tbutton._ModeIsDone, true);
+        });
+
+        test('using internal defaults for tips css', () => {
+          
+          let tipBgColor = 'white'; 
+          let tipColor = 'black'; 
+          let tipOpacity = 0.9;
+
+          let tip = tbutton.shadowRoot.querySelector('paper-tooltip');
+
+          assert.equal(getCompStyle(tip, '--paper-tooltip-opacity'), tipOpacity);
+          assert.equal(getCompStyle(tip, '--paper-tooltip-background'), tipBgColor);
+          assert.equal(getCompStyle(tip, '--paper-tooltip-text-color'), tipColor);
+        });
       });
-    </script>
 
+      suite('notoggle element, no attributes', () => {
+        
+        let tbutton;
+
+        setup( () => {
+            tbutton = fixture('notoggle');
+        });
+
+        test('notoggle is true', () => {
+        
+          assert.equal(tbutton.notoggle, true);
+        });
+
+        test('default icons in use', () => {
+            
+          assert.equal(tbutton.doneIcon, "expand-less");
+          assert.equal(tbutton.doIcon, "expand-more");
+        });
+
+        test('start with do state', () =>{
+        
+
+          assert.equal(tbutton.mode, "do");
+          assert.equal(tbutton._ModeIsDone, false);
+        });
+
+        test('start with expand-less icon', () =>{
+    
+          let value = tbutton._ModeIcon;
+
+          assert.equal(value, "expand-more");
+        });
+    
+        test('pressing button toggles not', () =>{
+    
+          let pre = tbutton;
+    
+          pressbutton(tbutton);
+    
+          assert.equal(tbutton.mode, pre.mode);
+          assert.equal(tbutton._ModeIcon, pre._ModeIcon);
+          assert.equal(tbutton._ModeIsDone, pre._ModeIsDone);
+        });
+      });
+
+      suite('custom icons and css', () =>{
+        
+        let tbutton;
+
+        setup(() =>{
+          tbutton = fixture('customcss');
+        });
+
+        test('notoggle is false', () =>{
+          
+          let value = tbutton.notoggle;
+          assert.equal(value, false);
+        });
+    
+        test('custom icons on paper-fab toggle', () =>{
+            
+          // let value = tbutton.icons;
+          //debugger;
+          assert.equal(tbutton.doneIcon, "add");
+          assert.equal(tbutton.doIcon, "menu");
+
+          let pbutton = tbutton.shadowRoot.querySelector('paper-fab');
+              
+          assert.equal(pbutton.icon, "menu");
+          pressbutton(tbutton);
+          assert.equal(pbutton.icon, "add");
+        });
+            
+        test('start with do state', () =>{
+            
+          assert.equal(tbutton.mode, "do");
+          assert.equal(tbutton._ModeIsDone, false);
+        });
+
+        test('pressing button toggles to custom icon', () =>{
+          
+          pressbutton(tbutton);
+
+          assert.equal(tbutton.mode, "done");
+          assert.equal(tbutton._ModeIcon, "add");
+          assert.equal(tbutton._ModeIsDone, true);
+        });
+
+        test('pressing button toggles not, if notoggle is set', () =>{
+
+          tbutton.notoggle = true;
+          pressbutton(tbutton);
+
+          assert.equal(tbutton.mode, "do");
+          assert.equal(tbutton._ModeIcon, "menu");
+          assert.equal(tbutton._ModeIsDone, false);
+
+          pressbutton(tbutton);
+
+          assert.equal(tbutton.mode, "do");
+          assert.equal(tbutton._ModeIcon, "menu");
+          assert.equal(tbutton._ModeIsDone, false);
+        });
+        
+        test('setting color with custom colors', () =>{
+          let doColor = getCompStyle(tbutton, '--toggle-button-do-color');
+          let doneColor = getCompStyle(tbutton, '--toggle-button-done-color');
+          
+          let pbutton = tbutton.shadowRoot.querySelector('paper-fab');
+
+          assert.equal(tbutton.mode, "do");
+          assert.equal(getCompStyle(pbutton, 'color'), doColor);
+            
+          
+          pressbutton(tbutton);
+        
+          assert.equal(tbutton.mode, "done");
+          assert.equal(getCompStyle(pbutton, 'color'), doneColor);  
+        });
+
+        test('setting custom tip color, background color and opacity', () => {
+          
+          let tipBgColor = getCompStyle(tbutton, '--toggle-button-tip-background');
+          let tipColor = getCompStyle(tbutton, '--toggle-button-tip-text-color');
+          let tipOpacity = getCompStyle(tbutton, '--toggle-button-tip-opacity');
+
+          let tip = tbutton.shadowRoot.querySelector('paper-tooltip');
+
+          assert.equal(getCompStyle(tip, '--paper-tooltip-opacity'), tipOpacity);
+          assert.equal(getCompStyle(tip, '--paper-tooltip-background'), tipBgColor);
+          assert.equal(getCompStyle(tip, '--paper-tooltip-text-color'), tipColor);
+        });
+      });
+      
+      suite('paper-tooltip css styling', () => {
+        let tbutton;
+
+        setup(() => {
+          tbutton = fixture('papercss');
+        });
+
+        test('setting  paper-tooltip custom color, background color and opacity', () => {
+
+          let tipBgColor = getCompStyle(tbutton, '--paper-tooltip-background');
+          let tipColor = getCompStyle(tbutton, '--paper-tooltip-text-color');
+          let tipOpacity = getCompStyle(tbutton, '--paper-tooltip-opacity');
+
+          let tip = tbutton.shadowRoot.querySelector('paper-tooltip');
+
+          assert.equal(getCompStyle(tip, '--paper-tooltip-opacity'), tipOpacity);
+          assert.equal(getCompStyle(tip, '--paper-tooltip-background'), tipBgColor);
+          assert.equal(getCompStyle(tip, '--paper-tooltip-text-color'), tipColor);
+        });
+      });
+
+      suite('set start-done', () => {
+        
+        let tbutton;
+        let pbutton;
+
+        setup(() => {
+          tbutton = fixture('modedone');
+          pbutton = tbutton.shadowRoot.querySelector('paper-fab');
+        });
+
+          test('start with done state', () => {
+            assert.equal(tbutton.mode, "done");
+          });
+
+          test('start with done icon', () => {
+            assert.equal(tbutton._ModeIcon, tbutton.doneIcon);
+            assert.equal(tbutton._ModeIcon, pbutton.icon);
+          });
+
+          test('pressing button toggles to do', () => {
+
+            pressbutton(tbutton);
+
+            assert.equal(tbutton.mode, "do");
+            assert.equal(tbutton._ModeIcon, tbutton.doIcon);
+            assert.equal(tbutton._ModeIcon, pbutton.icon);
+            assert.equal(tbutton._ModeIsDone, false);
+          });
+      });
+
+      function pressbutton(tbutton) {
+        let pbutton = tbutton.shadowRoot.querySelector('paper-fab');
+        pbutton.click();
+      }
+
+      function getCompStyle(element, property){
+        if (window.ShadyCSS) {
+          return ShadyCSS.getComputedStyleValue(element,property);
+        }else{
+          return getComputedStyle(element).getPropertyValue(property);
+        }          
+      }
+    </script>
   </body>
 </html>

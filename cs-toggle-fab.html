@@ -1,36 +1,155 @@
 <link rel="import" href="../polymer/polymer-element.html">
+<link rel="import" href="../polymer/lib/mixins/gesture-event-listeners.html">
 
+<link rel="import" href="./default-icons.html">
+<link rel="import" href="../paper-fab/paper-fab.html">
+<link rel="import" href="../neon-animation/web-animations.html">
+<link rel="import" href="../paper-tooltip/paper-tooltip.html">
+
+/*Todo
+--paper-fab-background` | The background color of the button | `--accent-color` `--paper-fab-keyboard-focus-background` |
+The background color of the button when focused | `--paper-pink-900` `--paper-fab-disabled-background` | The background color
+of the button when it's disabled | `--paper-grey-300` `--paper-fab-disabled-text` | The text color of the button when it's
+disabled | `--paper-grey-500`
+*/
 <dom-module id="cs-toggle-fab">
-  <template>
-    <style>
-      :host {
-        display: block;
-      }
-    </style>
-    <h2>Hello [[prop1]]!</h2>
-  </template>
+	<template>
+		<style>
+			:host{
+				--tt-background: var(--toggle-button-tip-background,var(--paper-tooltip-background));
+				--tt-opacity: var(--toggle-button-tip-opacity,var(--paper-tooltip-opacity));
+				--tt-text-color: var(--toggle-button-tip-text-color, var(--paper-tooltip-text-color));					
+			}
+		
+			paper-fab.do{
+				color:var(--toggle-button-do-color,black);
+				background-color: var(--toggle-button-do-bg-color,var(--toggle-button-done-color,var(--paper-fab-background, white)));
+			}
 
-  <script>
-    /**
-     * `cs-toggle-fab`
-     * Wrapper for paper-fab, that changes its icon on tap.
-     *
-     * @customElement
-     * @polymer
-     * @demo demo/index.html
-     */
-    class CsToggleFab extends Polymer.Element {
-      static get is() { return 'cs-toggle-fab'; }
-      static get properties() {
-        return {
-          prop1: {
-            type: String,
-            value: 'cs-toggle-fab'
-          }
-        };
-      }
-    }
+			paper-fab.done{
+				color:var(--toggle-button-done-color,var(--toggle-button-do-bg-color,white));
+				background-color: var(--toggle-button-done-bg-color,var(--toggle-button-do-color,black));
+			}
 
-    window.customElements.define(CsToggleFab.is, CsToggleFab);
-  </script>
+			paper-tooltip{
+			--paper-tooltip-background: var(--tt-background, white);	
+			--paper-tooltip-opacity:	var(--tt-opacity, 0.9);
+			--paper-tooltip-text-color:var(--tt-text-color, black); 
+			box-shadow: 0 2px 2px 0 rgba(0, 0, 0, 0.14), 0 1px 5px 0 rgba(0, 0, 0, 0.12), 0 3px 1px -2px rgba(0, 0, 0, 0.2);
+			border-radius: 2px;
+			}	
+		</style>
+
+		<paper-fab id="tog" class$="[[mode]]" icon="[[_ModeIcon]]" noink on-tap="_toggle"></paper-fab>
+		<paper-tooltip for="tog" position="right">[[tip]]</paper-tooltip>
+
+	</template>
+	
+	<script>
+/**
+`<cs-toggle-fab>` is a small wrapper for `<paper-fab>` and `<paper-tooltip>`. 
+It toggles on tap the icon displayed on the button. Optionally you can use the attribute `tip` to add a 
+tooltip to the button. `<cs-toggle-fab>`  has attributes to set your own icons 
+and css variables to style button and tooltip.
+
+The button switches on tap between two states, *do* and *done*. These govern the look of the button.
+### Examples
+are in the Demo.
+### Styling
+`<cs-toggle-fab>` provides custom css properties for the styling of button and tooltip.
+
+Custom property                  | Description                            | Default
+---------------------------------|----------------------------------------|----------
+`--toggle-button-do-color`       | button's do state color 							  | black
+`--toggle-button-done-color`     | button's done state color              | black
+`--toggle-button-tip-background` | tooltip's background-color             | `--paper-tooltip-background` or white
+`--toggle-button-tip-opacity`    | tooltip's opacitiy                     | `--paper-tooltip-opacity` or 0.9
+`--toggle-button-tip-text-color` | tooltip's text color                   | `--paper-tooltip-text-color` or black
+
+@customElement 
+@polymer
+@demo demo/index.html
+*
+*/
+		class  CsToggleFab extends Polymer.GestureEventListeners(Polymer.Element) {
+
+			static get is() { return 'cs-toggle-fab'; }
+
+			static get properties() {
+				return {
+					/* Icon shown in *do* state */ 
+					doIcon:{
+						type:String,
+						value: "expand-more"
+					},
+					/* Icon shown in *done* state */
+					doneIcon:{
+						type:String,
+						value:"expand-less"
+					},
+					/* If `notoggle` is present, button stays in it's initial state. */
+					notoggle:{
+						type:Boolean,
+						value:false
+					},
+          // Text in the tooltip 
+					tip:{
+						type:String
+					},
+					// Attribute that contains the current state of the button, possible values are *do* and *done*
+					mode:{
+						type: String,
+						value:"do",
+						reflectToAttribute: true,
+						readOnly:true,
+						notify:true
+					},
+					// If present, inital state of the button is set to *done* instead of the default *do*
+					startDone:{
+						type:Boolean,
+						value:false
+					},
+					//Current icon of the button
+					_ModeIcon:{
+						type: String,
+						value:"expand-more"
+					},
+					//If true, mode is *done* else *do* 
+					_ModeIsDone:{
+						type: Boolean,
+						value:false
+					}
+				}
+			}
+/* toggles the state of the button  
+  @return {void}
+*/	
+			_toggle(){
+				if(!this.notoggle){
+					this._ModeIsDone=!this._ModeIsDone;
+					if(this._ModeIsDone){
+						this._setMode("done");
+						this._ModeIcon=this.doneIcon;
+					} else{
+						this._setMode("do");
+						this._ModeIcon=this.doIcon;
+					};
+				};
+			}
+
+// Adjusts state, if `start-done` is set and initializes icon 
+			connectedCallback(){
+				super.connectedCallback();
+				if(this.startDone){
+					this._ModeIcon=this.doneIcon;
+					this._ModeIsDone=true;
+					this._setMode("done");
+				}else{
+					this._ModeIcon = this.doIcon;					
+				}
+			}
+		}
+		// Register custom element definition using standard platform API
+		customElements.define(CsToggleFab.is, CsToggleFab);
+	</script>
 </dom-module>
