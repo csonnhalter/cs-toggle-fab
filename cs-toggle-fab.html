@@ -48,9 +48,10 @@ disabled | `--paper-grey-500`
 	<script>
 /**
 `<cs-toggle-fab>` is a small wrapper for `<paper-fab>` and `<paper-tooltip>`. 
-It toggles on tap the icon displayed on the button. Optionally you can use the attribute `tip` to add a 
-tooltip to the button. `<cs-toggle-fab>`  has attributes to set your own icons 
-and css variables to style button and tooltip.
+On tap it toggles the color and the icon displayed on the button. 
+Optionally you can use the attribute `tip` to add a tooltip to the button. 
+`<cs-toggle-fab>` has attributes to set your own icons and css variables 
+to style button and tooltip.
 
 The button switches on tap between two states, *do* and *done*. These govern the look of the button.
 ### Examples
@@ -92,7 +93,7 @@ Custom property                  | Description                            | Defa
 						type:Boolean,
 						value:false
 					},
-          // Text in the tooltip 
+          // Text in the tooltip  
 					tip:{
 						type:String
 					},
@@ -121,9 +122,10 @@ Custom property                  | Description                            | Defa
 					}
 				}
 			}
-/* toggles the state of the button  
-  @return {void}
-*/	
+
+			/* toggles the state of the button  
+				@return {void}
+			*/	
 			_toggle(){
 				if(!this.notoggle){
 					this._ModeIsDone=!this._ModeIsDone;
@@ -137,7 +139,8 @@ Custom property                  | Description                            | Defa
 				};
 			}
 
-// Adjusts state, if `start-done` is set and initializes icon 
+			// Adjusts state, if `start-done` is set and initializes icon 
+			// @return {void}
 			connectedCallback(){
 				super.connectedCallback();
 				if(this.startDone){
@@ -149,6 +152,7 @@ Custom property                  | Description                            | Defa
 				}
 			}
 		}
+
 		// Register custom element definition using standard platform API
 		customElements.define(CsToggleFab.is, CsToggleFab);
 	</script>
