@@ -20,7 +20,8 @@
       <style is="custom-style" include="demo-pages-shared-styles">
         .demotip {
           --demo-snippet-demo:{
-            background-color: var(--paper-yellow-200);  
+            background-color: var(--paper-yellow-200);
+            }              
           }
         }
       </style>
@@ -31,7 +32,7 @@
       <h3>Basic cs-toggle-fab</h3>
       <demo-snippet>
         <template>
-          <cs-toggle-fab style="--paper-fab-background: magenta;"></cs-toggle-fab>
+          <cs-toggle-fab style="--paper-fab-background: var(--paper-blue-500);"></cs-toggle-fab>
         </template>
         </demo-snippet>
 
@@ -41,25 +42,24 @@
           <custom-style>
               <style is="custom-style">
                 .notoggle { 
-                  --toggle-button-do-color:var(--paper-cyan-500);
+                  --toggle-button-do-color:var(--paper-pink-500);
                 }
               </style>
             </custom-style>    
             <cs-toggle-fab notoggle class="notoggle" ></cs-toggle-fab>
         </template>
       </demo-snippet>
-      <h3>Custom icons and different starting states for cs-toggle-fab </h3>
+      <h3>Custom icons and different starting state for cs-toggle-fab </h3>
       <demo-snippet>
         <template>
           <custom-style>
             <style is="custom-style">
               .styled {
               --toggle-button-do-color:var(--paper-blue-500);
-              --toggle-button-done-color:var(--paper-pink-500); 
+              --toggle-button-done-color:var(--paper-grey-500);
                }
             </style>
           </custom-style>
-          <cs-toggle-fab do-icon="favorite-border" done-icon="favorite" class="styled"></cs-toggle-fab>
           <cs-toggle-fab start-done do-icon="favorite-border" done-icon="favorite" class="styled"></cs-toggle-fab>
         </template>
       </demo-snippet>
@@ -70,7 +70,7 @@
             <style is="custom-style">
               .tip {
 				        --toggle-button-tip-background:var(--paper-grey-500);
-				        --toggle-button-tip-opacity:0.3;
+				        --toggle-button-tip-opacity:0.4;
 				        --toggle-button-tip-text-color: white;              					
               }
             </style>
