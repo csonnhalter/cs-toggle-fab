@@ -36,7 +36,7 @@
     <test-fixture id="papercss">
       <template>
         <cs-toggle-fab 
-          style="--paper-tooltip-background: rgb(0, 255, 0); --paper-tooltip-text-color: rgb(255, 0, 255); --paper-tooltip-opacity:0.1; ">
+          style="--paper-fab-background:  rgb(255, 0, 0); --paper-tooltip-background: rgb(0, 255, 0); --paper-tooltip-text-color: rgb(255, 0, 255); --paper-tooltip-opacity:0.1; ">
         </cs-toggle-fab>
       </template>
     </test-fixture>
@@ -251,6 +251,15 @@
           assert.equal(getCompStyle(tip, '--paper-tooltip-opacity'), tipOpacity);
           assert.equal(getCompStyle(tip, '--paper-tooltip-background'), tipBgColor);
           assert.equal(getCompStyle(tip, '--paper-tooltip-text-color'), tipColor);
+        });
+
+        test('setting  paper-fab-background', () => {
+
+          let fabColor = getCompStyle(tbutton,'--paper-fab-background');
+
+          let fab = tbutton.shadowRoot.querySelector('paper-fab');
+
+          assert.equal(getCompStyle(fab, '--paper-fab-background'), fabColor);
         });
       });
 

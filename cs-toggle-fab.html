@@ -6,28 +6,23 @@
 <link rel="import" href="../neon-animation/web-animations.html">
 <link rel="import" href="../paper-tooltip/paper-tooltip.html">
 
-/*Todo
---paper-fab-background` | The background color of the button | `--accent-color` `--paper-fab-keyboard-focus-background` |
-The background color of the button when focused | `--paper-pink-900` `--paper-fab-disabled-background` | The background color
-of the button when it's disabled | `--paper-grey-300` `--paper-fab-disabled-text` | The text color of the button when it's
-disabled | `--paper-grey-500`
-*/
+
 <dom-module id="cs-toggle-fab">
 	<template>
 		<style>
 			:host{
 				--tt-background: var(--toggle-button-tip-background,var(--paper-tooltip-background));
 				--tt-opacity: var(--toggle-button-tip-opacity,var(--paper-tooltip-opacity));
-				--tt-text-color: var(--toggle-button-tip-text-color, var(--paper-tooltip-text-color));					
+				--tt-text-color: var(--toggle-button-tip-text-color, var(--paper-tooltip-text-color));
 			}
 		
 			paper-fab.do{
-				color:var(--toggle-button-do-color,black);
+				color:var(--toggle-button-do-color,var(--toggle-button-done-bg-color,black));
 				background-color: var(--toggle-button-do-bg-color,var(--toggle-button-done-color,var(--paper-fab-background, white)));
 			}
 
 			paper-fab.done{
-				color:var(--toggle-button-done-color,var(--toggle-button-do-bg-color,white));
+				color:var(--toggle-button-done-color,var(--toggle-button-do-bg-color, var(--paper-fab-background, white)));
 				background-color: var(--toggle-button-done-bg-color,var(--toggle-button-do-color,black));
 			}
 
