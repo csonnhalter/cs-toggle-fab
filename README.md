@@ -15,8 +15,6 @@ The fab changes on tap between two icons and has an optional tooltip. A wrapper 
 ```
 -->
 ```html
-<cs-toggle-fab tip="Press me and I will change!" >
-</cs-toggle-fab>
-<cs-toggle-fab do-icon="social:sentiment-dissatisfied" done-icon="social:sentiment-satisfied">
+<cs-toggle-fab tip="Press me and I will change!" do-icon="social:sentiment-dissatisfied" done-icon="social:sentiment-satisfied">
 </cs-toggle-fab>
 ```
